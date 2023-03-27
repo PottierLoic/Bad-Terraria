@@ -12,6 +12,12 @@ const (
 	dirt_color = gx.rgb(102, 51, 0)
 	grass_color = gx.rgb(153, 255, 153)
 	
+	// Terrain generation
 
-	// Terrain genration
+
+	// Player stats
+
+
+	// Enemy stats
+
 )

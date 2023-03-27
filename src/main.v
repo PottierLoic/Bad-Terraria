@@ -9,6 +9,7 @@ struct App {
 		game Game = init_game()
 }
 
+// will need a rework when cells are placed on a 2d grid instead of a 1d array
 fn (mut app App) display() {
 	// display cells
 	for cell in app.game.world.cells {

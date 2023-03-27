@@ -7,6 +7,7 @@ struct World {
 		cells []Cell
 }
 
+// will need a rework when cells are placed on a 2D grid instead of a 1D array
 fn (mut w World) generate_terrain ()  {
 	mut soil_height := rand.int_in_range(screen_height/cell_size/2 - 5, screen_height/cell_size/2 + 5) or { screen_height/cell_size/2 }
 	for col in 0..screen_width/cell_size {
@@ -16,6 +17,14 @@ fn (mut w World) generate_terrain ()  {
 		}
 		soil_height += rand.int_in_range(-1, 2) or { 0 }
 	}
+}
+
+// will need a rework when cells are placed on a 2D grid instead of a 1D array
+fn (w World) print() {
+	for cell in w.cells {
+		cell.print()
+	}
+	w.player.print()
 }
 
 fn init_world() World {
