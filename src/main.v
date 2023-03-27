@@ -31,6 +31,18 @@ fn (mut app App) display() {
 	}
 
 	// display player
+	p := app.game.world.player
+	for xx in 0..player.width {
+		for yy in 0..player_height {
+			if p.x + xx < 0 || p.x + xx >= screen_width || p.y +yy < 0 || p.y + yy >= screen_height {
+				continue
+			}
+			unsafe { 
+				app.pixels[(p.x + xx) + (p.y + yy) * screen_width] = u32(player_color.abgr8()) 
+			}
+		}
+	}
+
 	
 
 	mut istream_image := app.gg.get_cached_image_by_idx(app.iidx)

@@ -7,6 +7,9 @@ const (
 	screen_height = 800
 	cell_size = 20
 
+	player_height = 40
+	player_width = 20
+
 	// Colors
 	bg_color = gx.rgb(153, 255, 255)
 	dirt_color = gx.rgb(102, 51, 0)
