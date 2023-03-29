@@ -4,6 +4,7 @@ import rand
 struct World {
 	mut:
 		player Player
+		grid [][]Cell
 		cells []Cell
 }
 
@@ -16,7 +17,7 @@ fn (mut w World) generate_terrain ()  {
 			w.cells << init_cell(col * cell_size, row * cell_size, 'dirt')
 		}
 		soil_height += rand.int_in_range(-1, 2) or { 0 }
-	}
+	}	
 }
 
 // will need a rework when cells are placed on a 2D grid instead of a 1D array

@@ -35,7 +35,7 @@ fn (p Player) print () {
 fn init_player(name string, x f32, y f32) Player {
 	return Player {
 		name: name
-		x: 0.0
+		x: screen_width / 2
 		y: 0.0
 		health: 100
 	}

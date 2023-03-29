@@ -12,6 +12,7 @@ struct App {
 // will need a rework when cells are placed on a 2d grid instead of a 1d array
 fn (mut app App) display() {
 	// display cells
+	unsafe { app.pixels = vcalloc(screen_width * screen_height * sizeof(u32))} // bad written code, but it works
 	for cell in app.game.world.cells {
 		for xx in 0..cell_size {
 			for yy in 0..cell_size {
@@ -32,18 +33,16 @@ fn (mut app App) display() {
 
 	// display player
 	p := app.game.world.player
-	for xx in 0..player.width {
-		for yy in 0..player_height {
+	for xx in int(-player_width/2)..int(player_width/2) {
+		for yy in 0..player_height {	
 			if p.x + xx < 0 || p.x + xx >= screen_width || p.y +yy < 0 || p.y + yy >= screen_height {
 				continue
 			}
 			unsafe { 
-				app.pixels[(p.x + xx) + (p.y + yy) * screen_width] = u32(player_color.abgr8()) 
+				app.pixels[int(p.x + xx) + int(p.y + yy) * screen_width] = u32(player_color.abgr8()) 
 			}
 		}
 	}
-
-	
 
 	mut istream_image := app.gg.get_cached_image_by_idx(app.iidx)
 	istream_image.update_pixel_data(app.pixels)
@@ -61,6 +60,16 @@ fn frame(mut app App) {
 	app.gg.end()
 }
 
+fn keydown(code gg.KeyCode, mod gg.Modifier, mut app App) {
+	if code == gg.KeyCode.escape {
+		app.gg.quit()
+	}
+	if code == gg.KeyCode.enter {
+		app.game = init_game()
+	}
+}
+
+
 fn main() {
 	mut app := App {
 		gg: 0
@@ -72,6 +81,7 @@ fn main() {
 		user_data: &app
 		width: screen_width
 		height: screen_height
+		keydown_fn: keydown
 		create_window: true
 		window_title: 'Bad-Terraria'
 	)
