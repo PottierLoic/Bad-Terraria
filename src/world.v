@@ -5,32 +5,45 @@ struct World {
 	mut:
 		player Player
 		grid [][]Cell
-		cells []Cell
 }
 
-// will need a rework when cells are placed on a 2D grid instead of a 1D array
 fn (mut w World) generate_terrain ()  {
+
+	for _ in 0..screen_height/cell_size {
+		w.grid << []Cell{}
+	}
+	
 	mut soil_height := rand.int_in_range(screen_height/cell_size/2 - 5, screen_height/cell_size/2 + 5) or { screen_height/cell_size/2 }
 	for col in 0..screen_width/cell_size {
-		w.cells << init_cell(col * cell_size, soil_height * cell_size, 'grass')
+		for row in 0..soil_height {
+			w.grid[row][col] = init_cell("air")
+		}
+		w.grid[soil_height][col] = init_cell("grass")
 		for row in soil_height+1..screen_height/cell_size {
-			w.cells << init_cell(col * cell_size, row * cell_size, 'dirt')
+			w.grid[row][col] = init_cell("dirt")
 		}
 		soil_height += rand.int_in_range(-1, 2) or { 0 }
 	}	
 }
 
-// will need a rework when cells are placed on a 2D grid instead of a 1D array
 fn (w World) print() {
-	for cell in w.cells {
-		cell.print()
+	for row in w.grid {
+		for cell in row {
+			if cell != unsafe { nil } {
+				print('X')
+			} else {
+				print(' ')
+			}
+			print(' ')
+		}
+		println('')
 	}
 	w.player.print()
 }
 
 fn init_world() World {
 	mut w := World{
-		player: init_player('loic', 0.0, 0.0)
+		player: init_player("loic", 0.0, 0.0)
 	}
 	w.generate_terrain()
 	return w
