@@ -8,9 +8,12 @@ struct World {
 }
 
 fn (mut w World) generate_terrain ()  {
-
+	println("generating terrain...")
 	for _ in 0..screen_height/cell_size {
 		w.grid << []Cell{}
+		for _ in 0..screen_width/cell_size {
+			w.grid[w.grid.len-1] << init_cell("air")
+		}
 	}
 	
 	mut soil_height := rand.int_in_range(screen_height/cell_size/2 - 5, screen_height/cell_size/2 + 5) or { screen_height/cell_size/2 }
@@ -24,12 +27,23 @@ fn (mut w World) generate_terrain ()  {
 		}
 		soil_height += rand.int_in_range(-1, 2) or { 0 }
 	}	
+	println("terrain generated")
+}
+
+fn (mut w World) update() {
+	x := int(w.player.x/cell_size)
+	y := int(w.player.y/cell_size)
+	if x >= 0 && x < screen_width/cell_size && y+2 >= 0 && y+2 < screen_height/cell_size {
+		if w.grid[y+2][x].cell_type == "air" {
+			w.player.move(0.0, 10.0)
+		}
+	}
 }
 
 fn (w World) print() {
 	for row in w.grid {
 		for cell in row {
-			if cell != unsafe { nil } {
+			if cell.cell_type != "air" {
 				print('X')
 			} else {
 				print(' ')

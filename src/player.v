@@ -14,7 +14,7 @@ fn (mut p Player) move(x f32, y f32) {
 	p.y += y
 }
 
-fn (mut p Player) damage(damage int) {
+fn (mut p Player) take_damage(damage int) {
 	p.health -= damage
 	if p.health < 0 {
 		p.health = 0

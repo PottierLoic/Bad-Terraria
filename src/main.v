@@ -25,7 +25,7 @@ fn (mut app App) display() {
 						} else if app.game.world.grid[row][col].cell_type == "grass" {
 							app.pixels[(col*cell_size + xx) + (row*cell_size + yy) * screen_width] = u32(grass_color.abgr8()) 
 						} else if app.game.world.grid[row][col].cell_type == "air" {
-							app.pixels[(col*cell_size + xx) + (row*cell_size + yy) * screen_width] = u32(grass_color.abgr8()) 
+							app.pixels[(col*cell_size + xx) + (row*cell_size + yy) * screen_width] = u32(bg_color.abgr8()) 
 						}
 					}
 				}
@@ -59,6 +59,7 @@ fn graphics_init(mut app App) {
 fn frame(mut app App) {
 	app.gg.begin()
 	app.display()
+	app.game.update()
 	app.gg.end()
 }
 

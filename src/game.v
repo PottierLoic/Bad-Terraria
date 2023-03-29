@@ -1,7 +1,12 @@
 module main
 
 pub struct Game {
-	world World
+	mut :
+		world World
+}
+
+fn (mut g Game) update () {
+	g.world.update()
 }
 
 fn (g Game) print () {
