@@ -15,7 +15,7 @@ fn init_chunk(x int, y int) Chunk {
 	for idy in 0..chunk_size {
 		chunk.cells << []Cell{}
 		for _ in 0..chunk_size {
-			chunk.cells[idy] << init_cell("empty")
+			chunk.cells[idy] << init_cell("dirt")
 		}
 	}
 	return chunk

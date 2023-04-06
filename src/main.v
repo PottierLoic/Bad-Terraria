@@ -17,6 +17,7 @@ fn (mut app App) display() {
 	for chunk_row in chunks {
 		for chunk in chunk_row {
 			if chunk.x + chunk_size < player.x - screen_width/2 || chunk.x > player.x + screen_width/2 || chunk.y + chunk_size < player.y - screen_height/2 || chunk.y > player.y + screen_height/2 {
+				print("chunk out of bounds\n")
 				continue
 			}
 			for row in 0..chunk_size {
@@ -29,6 +30,7 @@ fn (mut app App) display() {
 							if chunk.x + col*cell_size + xx >= player.x - screen_width/2 || chunk.x + col*cell_size + xx < player.x + screen_width/2 || chunk.y + row*cell_size + yy >= player.y - screen_height/2 || chunk.y + row*cell_size + yy < player.y + screen_height/2 {
 								continue
 							}
+							print("x: $chunk.x + $col*cell_size + $xx, y: $chunk.y + $row*cell_size + $yy\n")
 							app.pixels[col*cell_size + xx - (player.x - screen_width/2) + (row*cell_size + yy - (player.y - screen_height/2) * screen_width)] = u32(dirt_color.abgr8())
 						}
 					}

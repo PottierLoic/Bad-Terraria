@@ -14,7 +14,7 @@ fn (mut w World) generate_terrain ()  {
 }
 
 fn (mut w World) update() {
-	print("a")
+	print("")
 }
 
 fn init_world() World {
