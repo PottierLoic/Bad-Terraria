@@ -14,6 +14,7 @@ fn (mut app App) display() {
 	// display chunks
 	chunks := app.game.world.chunk_grid
 	player := app.game.world.player
+	app.pixels = unsafe { vcalloc(screen_width * screen_height * sizeof(u32)) }
 
 	for chunk_row in chunks {
 		for chunk in chunk_row {
@@ -28,16 +29,15 @@ fn (mut app App) display() {
 					}
 					for xx in 0..cell_size {
 						for yy in 0..cell_size {
+							if player.x < screen_width / 2 {
+								relative_x := chunk.x + col * cell_size + xx
+							}
 							relative_x := chunk.x + col * cell_size + xx - player.x + screen_width / 2
 							relative_y := chunk.y + row * cell_size + yy - player.y + screen_height / 2
 							if relative_x < 0 || relative_x >  screen_width || relative_y < 0 || relative_y > screen_height {
 								continue 
 							}
-							if chunk.cells[row][col].cell_type == "dirt" {
-								app.pixels[int(relative_x) + int(relative_y) * screen_width] = u32(dirt_color.abgr8())
-							} else if chunk.cells[row][col].cell_type == "grass" {
-								app.pixels[int(relative_x) + int(relative_y) * screen_width] = u32(grass_color.abgr8())
-							}
+							app.pixels[int(relative_x) + int(relative_y) * screen_width] = u32(chunk.cells[row][col].color.abgr8())
 						}
 					}
 				}
