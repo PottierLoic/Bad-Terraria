@@ -19,7 +19,7 @@ fn (mut w World) update() {
 
 fn init_world() World {
 	mut w := World{
-		player: init_player("loic", 0, 0)
+		player: init_player("loic", 500, 500)
 	}
 
 	for y in 0..world_height {

@@ -21,7 +21,6 @@ fn (mut app App) display() {
 			if chunk.x > player.x + screen_width / 2 { continue }
 			if chunk.y + chunk_full_size < player.y - screen_height / 2 { continue }
 			if chunk.y > player.y + screen_height / 2 { continue }
-			println("must draw chunk: ${chunk.x} | ${chunk.y}")
 			for row in 0..chunk_size {
 				for col in 0..chunk_size {
 					if chunk.cells[row][col].cell_type == "empty" {
@@ -29,32 +28,19 @@ fn (mut app App) display() {
 					}
 					for xx in 0..cell_size {
 						for yy in 0..cell_size {
-							real_x := chunk.x + col * cell_size + xx - player.x + screen_width / 2
-							real_y := chunk.y + row * cell_size + yy - player.y + screen_height / 2
-							if real_x < 0 || real_x > player.x + screen_width / 2  || real_y < 0 || real_y > player.y + screen_height / 2 {
-								continue
+							relative_x := chunk.x + col * cell_size + xx - player.x + screen_width / 2
+							relative_y := chunk.y + row * cell_size + yy - player.y + screen_height / 2
+							if relative_x < 0 || relative_x >  screen_width || relative_y < 0 || relative_y > screen_height {
+								continue 
 							}
-							println("chunk : ${chunk.x} | ${chunk.y}")
-							println("row/col : ${col} | ${row}")
-							println("pixel : ${real_x} | ${real_y}")
-							app.pixels[real_x + real_y * screen_width] = u32(dirt_color.abgr8())
+							if chunk.cells[row][col].cell_type == "dirt" {
+								app.pixels[int(relative_x) + int(relative_y) * screen_width] = u32(dirt_color.abgr8())
+							} else if chunk.cells[row][col].cell_type == "grass" {
+								app.pixels[int(relative_x) + int(relative_y) * screen_width] = u32(grass_color.abgr8())
+							}
 						}
 					}
 				}
-			}
-		}
-	}
-
-	// display player
-	// need to redo it and just draw the player in the center
-	p := app.game.world.player
-	for xx in int(-player_width/2)..int(player_width/2) {
-		for yy in 0..player_height {	
-			if p.x + xx < 0 || p.x + xx >= screen_width || p.y +yy < 0 || p.y + yy >= screen_height {
-				continue
-			}
-			unsafe { 
-				app.pixels[int(p.x + xx) + int(p.y + yy) * screen_width] = u32(player_color.abgr8()) 
 			}
 		}
 	}
@@ -79,12 +65,18 @@ fn frame(mut app App) {
 fn keydown(code gg.KeyCode, mod gg.Modifier, mut app App) {
 	if code == gg.KeyCode.escape {
 		app.gg.quit()
-	}
-	if code == gg.KeyCode.enter {
+	} else if code == gg.KeyCode.enter {
 		app.game = init_game()
-	}
+	} else if code == gg.KeyCode.left {
+		app.game.world.player.move(-5, 0)
+	} else if code == gg.KeyCode.right {
+		app.game.world.player.move(5, 0)
+	} else if code == gg.KeyCode.down{
+		app.game.world.player.move(0, 5)
+	} else if code == gg.KeyCode.up {
+		app.game.world.player.move(0, -5)
+	} 
 }
-
 
 fn main() {
 	mut app := App {
@@ -101,6 +93,5 @@ fn main() {
 		create_window: true
 		window_title: 'Bad-Terraria'
 	)
-
 	app.gg.run()
 }
