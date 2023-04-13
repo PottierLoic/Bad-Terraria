@@ -45,6 +45,15 @@ fn (mut app App) display() {
 		}
 	}
 
+	// display player
+	for xx in 0..player_width {
+		for yy in 0..player_height {
+			relative_x := screen_width / 2 + xx
+			relative_y := screen_height / 2 + yy
+			app.pixels[int(relative_x) + int(relative_y) * screen_width] = u32(player_color.abgr8())
+		}
+	}
+
 	mut istream_image := app.gg.get_cached_image_by_idx(app.iidx)
 	istream_image.update_pixel_data(app.pixels)
 	size := gg.window_size()

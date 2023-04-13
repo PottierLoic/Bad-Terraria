@@ -3,9 +3,9 @@ import gx
 
 const (
 	// Sizes
-	screen_width = 800
-	screen_height = 800
-	cell_size = 10
+	screen_width = 1600
+	screen_height = 900
+	cell_size = 15
 
 	player_width = 20
 	player_height = 40
@@ -17,7 +17,7 @@ const (
 	grass_colors = [gx.rgb(153, 255, 153), gx.rgb(164, 255, 150), gx.rgb(153, 245, 160)]
 	
 	// Generation
-	world_width = 10
+	world_width = 30
 	world_height = 10
 	chunk_size = 10
 

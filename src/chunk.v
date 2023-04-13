@@ -18,11 +18,10 @@ fn init_chunk(x int, y int) Chunk {
 		x: x
 		y: y
 	}
-	mat := rand.element(["dirt", "grass"]) or { "dirt" }
 	for idy in 0..chunk_size {
 		chunk.cells << []Cell{}
 		for _ in 0..chunk_size {
-			chunk.cells[idy] << init_cell(mat)
+			chunk.cells[idy] << init_cell("empty")
 		}
 	}
 	return chunk
