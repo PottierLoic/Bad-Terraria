@@ -3,8 +3,8 @@ import gx
 
 const (
 	// Sizes
-	screen_width = 800
-	screen_height = 800
+	screen_width = 400
+	screen_height = 400
 	cell_size = 10
 
 	player_width = 20
@@ -20,6 +20,8 @@ const (
 	world_width = 10
 	world_height = 10
 	chunk_size = 10
+
+	chunk_full_size = chunk_size * cell_size
 
 	// Player stats
 

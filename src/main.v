@@ -9,6 +9,7 @@ struct App {
 		game Game = init_game()
 }
 
+// need changes since chunk x, y are now in the same scale as player x, y, will simplify a lot display
 fn (mut app App) display() {
 	// display chunks
 	chunks := app.game.world.chunk_grid
@@ -16,10 +17,11 @@ fn (mut app App) display() {
 
 	for chunk_row in chunks {
 		for chunk in chunk_row {
-			if chunk.x + chunk_size < player.x - screen_width/2 || chunk.x > player.x + screen_width/2 || chunk.y + chunk_size < player.y - screen_height/2 || chunk.y > player.y + screen_height/2 {
-				print("chunk out of bounds\n")
-				continue
-			}
+			if chunk.x + chunk_full_size < player.x - screen_width / 2 { continue }
+			if chunk.x > player.x + screen_width / 2 { continue }
+			if chunk.y + chunk_full_size < player.y - screen_height / 2 { continue }
+			if chunk.y > player.y + screen_height / 2 { continue }
+			println("must draw chunk: ${chunk.x} | ${chunk.y}")
 			for row in 0..chunk_size {
 				for col in 0..chunk_size {
 					if chunk.cells[row][col].cell_type == "empty" {
@@ -27,11 +29,15 @@ fn (mut app App) display() {
 					}
 					for xx in 0..cell_size {
 						for yy in 0..cell_size {
-							if chunk.x + col*cell_size + xx >= player.x - screen_width/2 || chunk.x + col*cell_size + xx < player.x + screen_width/2 || chunk.y + row*cell_size + yy >= player.y - screen_height/2 || chunk.y + row*cell_size + yy < player.y + screen_height/2 {
+							real_x := chunk.x + col * cell_size + xx - player.x + screen_width / 2
+							real_y := chunk.y + row * cell_size + yy - player.y + screen_height / 2
+							if real_x < 0 || real_x > player.x + screen_width / 2  || real_y < 0 || real_y > player.y + screen_height / 2 {
 								continue
 							}
-							print("x: $chunk.x + $col*cell_size + $xx, y: $chunk.y + $row*cell_size + $yy\n")
-							app.pixels[col*cell_size + xx - (player.x - screen_width/2) + (row*cell_size + yy - (player.y - screen_height/2) * screen_width)] = u32(dirt_color.abgr8())
+							println("chunk : ${chunk.x} | ${chunk.y}")
+							println("row/col : ${col} | ${row}")
+							println("pixel : ${real_x} | ${real_y}")
+							app.pixels[real_x + real_y * screen_width] = u32(dirt_color.abgr8())
 						}
 					}
 				}
@@ -39,8 +45,8 @@ fn (mut app App) display() {
 		}
 	}
 
-
 	// display player
+	// need to redo it and just draw the player in the center
 	p := app.game.world.player
 	for xx in int(-player_width/2)..int(player_width/2) {
 		for yy in 0..player_height {	
