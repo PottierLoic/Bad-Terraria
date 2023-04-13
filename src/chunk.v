@@ -9,6 +9,10 @@ struct Chunk {
 		y int
 }
 
+fn (mut c Chunk) set_cell (x int, y int, mat string) {
+	c.cells[y][x] = init_cell(mat)
+}
+
 fn init_chunk(x int, y int) Chunk {
 	mut chunk := Chunk{
 		x: x

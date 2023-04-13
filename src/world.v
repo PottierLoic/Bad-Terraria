@@ -10,6 +10,27 @@ struct World {
 fn (mut w World) generate_terrain ()  {
 	println("generating terrain...")
 
+	height := world_height*chunk_size
+	width := world_width*chunk_size
+
+	mut heights := []int{}
+	heights << height / 2 + rand.int_in_range(-5, 5) or { 0 }
+	for i in 0..width - 1 {
+		heights << heights.last() + rand.int_in_range(-1, 1) or { 0 }
+	}
+
+	for row in 0..world_height{
+		for col in 0..world_width {
+			for y in 0..chunk_size{
+				for x in 0..chunk_size {
+					if w.chunk_grid[row][col].y + y < heights[w.chunk_grid[row][col].x + x] {
+						print("a")
+					}
+				}
+			}
+		}
+	}
+
 	println("terrain generated")
 }
 
@@ -28,5 +49,6 @@ fn init_world() World {
 			w.chunk_grid[y] << init_chunk(x * chunk_full_size, y * chunk_full_size)
 		}
 	}
+	w.generate_terrain()
 	return w
 }
