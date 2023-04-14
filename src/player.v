@@ -1,12 +1,13 @@
 module main
 
 struct Player {
-	mut:
-		name string
-		x f32
-		y f32
-		max_health int = 100
-		health int
+mut:
+	name       string
+	x          f32
+	y          f32
+	max_health int = max_health
+	health     int = max_health
+	inventory  Inventory = init_inventory()
 }
 
 fn (mut p Player) move(x f32, y f32) {
@@ -28,15 +29,14 @@ fn (mut p Player) heal(heal int) {
 	}
 }
 
-fn (p Player) print () {
-	println('Player $p.name is at ($p.x, $p.y) with $p.health health')
+fn (p Player) print() {
+	println('Player ${p.name} is at (${p.x}, ${p.y}) with ${p.health} health')
 }
 
 fn init_player(name string, x f32, y f32) Player {
-	return Player {
+	return Player{
 		name: name
 		x: x
 		y: y
-		health: 100
 	}
 }

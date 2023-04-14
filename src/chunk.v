@@ -1,15 +1,13 @@
 module main
 
-import rand
-
 struct Chunk {
-	mut:
-		cells [][]Cell
-		x int
-		y int
+mut:
+	cells [][]Cell
+	x     int
+	y     int
 }
 
-fn (mut c Chunk) set_cell (x int, y int, mat string) {
+fn (mut c Chunk) set_cell(x int, y int, mat string) {
 	c.cells[y][x] = init_cell(mat)
 }
 
@@ -18,10 +16,10 @@ fn init_chunk(x int, y int) Chunk {
 		x: x
 		y: y
 	}
-	for idy in 0..chunk_size {
+	for idy in 0 .. chunk_size {
 		chunk.cells << []Cell{}
-		for _ in 0..chunk_size {
-			chunk.cells[idy] << init_cell("empty")
+		for _ in 0 .. chunk_size {
+			chunk.cells[idy] << init_cell('empty')
 		}
 	}
 	return chunk

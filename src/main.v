@@ -1,43 +1,49 @@
 module main
+
 import gg
 
 struct App {
-	mut:
-		gg &gg.Context = unsafe { nil }
-		iidx int
-		pixels &u32 = unsafe { vcalloc(screen_width * screen_height * sizeof(u32)) }
-		game Game = init_game()
+mut:
+	gg     &gg.Context = unsafe { nil }
+	iidx   int
+	pixels &u32 = unsafe { vcalloc(screen_width * screen_height * sizeof(u32)) }
+	game   Game = init_game()
 }
 
 // need changes since chunk x, y are now in the same scale as player x, y, will simplify a lot display
 fn (mut app App) display() {
+	app.pixels = unsafe { vcalloc(screen_width * screen_height * sizeof(u32)) }
+	player := app.game.world.player
+
 	// display chunks
 	chunks := app.game.world.chunk_grid
-	player := app.game.world.player
-	app.pixels = unsafe { vcalloc(screen_width * screen_height * sizeof(u32)) }
-
 	for chunk_row in chunks {
 		for chunk in chunk_row {
-			if chunk.x + chunk_full_size < player.x - screen_width / 2 { continue }
-			if chunk.x > player.x + screen_width / 2 { continue }
-			if chunk.y + chunk_full_size < player.y - screen_height / 2 { continue }
-			if chunk.y > player.y + screen_height / 2 { continue }
-			for row in 0..chunk_size {
-				for col in 0..chunk_size {
-					if chunk.cells[row][col].cell_type == "empty" {
+			if chunk.x + chunk_full_size < player.x - screen_width / 2 {
+				continue
+			}
+			if chunk.x > player.x + screen_width / 2 {
+				continue
+			}
+			if chunk.y + chunk_full_size < player.y - screen_height / 2 {
+				continue
+			}
+			if chunk.y > player.y + screen_height / 2 {
+				continue
+			}
+			for row in 0 .. chunk_size {
+				for col in 0 .. chunk_size {
+					if chunk.cells[row][col].cell_type == 'empty' {
 						continue
 					}
-					for xx in 0..cell_size {
-						for yy in 0..cell_size {
-							if player.x < screen_width / 2 {
-								relative_x := chunk.x + col * cell_size + xx
-							}
+					for xx in 0 .. cell_size {
+						for yy in 0 .. cell_size {
 							relative_x := chunk.x + col * cell_size + xx - player.x + screen_width / 2
 							relative_y := chunk.y + row * cell_size + yy - player.y + screen_height / 2
-							if relative_x < 0 || relative_x >  screen_width || relative_y < 0 || relative_y > screen_height {
-								continue 
+							if relative_x < 0 || relative_x > screen_width || relative_y < 0 || relative_y > screen_height {
+								continue
 							}
-							app.pixels[int(relative_x) + int(relative_y) * screen_width] = u32(chunk.cells[row][col].color.abgr8())
+							unsafe { app.pixels[int(relative_x) + int(relative_y) * screen_width] = u32(chunk.cells[row][col].color.abgr8()) }
 						}
 					}
 				}
@@ -45,19 +51,22 @@ fn (mut app App) display() {
 		}
 	}
 
-	// display player
-	for xx in 0..player_width {
-		for yy in 0..player_height {
+	// display player | must be moved before world display to handle screen border and chunk disparition
+	for xx in 0 .. player_width {
+		for yy in 0 .. player_height {
 			relative_x := screen_width / 2 + xx
 			relative_y := screen_height / 2 + yy
-			app.pixels[int(relative_x) + int(relative_y) * screen_width] = u32(player_color.abgr8())
+			unsafe { app.pixels[int(relative_x) + int(relative_y) * screen_width] = u32(player_color.abgr8()) }
 		}
 	}
 
+	// display all stored pixels, everything that is drawed with pixels directly need to be done before and put in app.pixels.
 	mut istream_image := app.gg.get_cached_image_by_idx(app.iidx)
 	istream_image.update_pixel_data(app.pixels)
 	size := gg.window_size()
 	app.gg.draw_image(0, 0, size.width, size.height, istream_image)
+
+	// displaying other images that is not stored in app.pixels need to be done here.
 }
 
 fn graphics_init(mut app App) {
@@ -80,15 +89,15 @@ fn keydown(code gg.KeyCode, mod gg.Modifier, mut app App) {
 		app.game.world.player.move(-5, 0)
 	} else if code == gg.KeyCode.right {
 		app.game.world.player.move(5, 0)
-	} else if code == gg.KeyCode.down{
+	} else if code == gg.KeyCode.down {
 		app.game.world.player.move(0, 5)
 	} else if code == gg.KeyCode.up {
 		app.game.world.player.move(0, -5)
-	} 
+	}
 }
 
 fn main() {
-	mut app := App {
+	mut app := App{
 		gg: 0
 	}
 	app.gg = gg.new_context(

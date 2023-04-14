@@ -1,13 +1,20 @@
 module main
 
 struct Inventory {
-	mut:
-		items []Item
-
+mut:
+	items []Item
 }
 
 fn (mut inv Inventory) add(item Item) {
-	inv.items << item
+	if inv.items.len < inventory_size {
+		inv.items << item
+	}
+}
+
+fn (mut inv Inventory) delete(idx int) {
+	if inv.items.len >= idx {
+		inv.items.delete(idx)
+	}
 }
 
 fn init_inventory() Inventory {
